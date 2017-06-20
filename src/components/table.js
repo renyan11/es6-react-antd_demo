@@ -1,42 +1,7 @@
 import React from 'react'
-import {Table, Icon} from 'antd'
+import {Table, Button} from 'antd'
 
-export default class myTable extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            tDate: [],
-            selectedRowKeys: []
-        }
-    }
-
-    componentDidMount() {
-        const data = []
-
-        for (let i = 0; i < 46; i++) {
-            data.push({
-                key: i,
-                name: `Mr劳卜${i}`,
-                age: 18,
-                address: `西湖区湖底公园${i}号`,
-                remark: 'http://www.cnblogs.com/luozhihao/',
-                operate: '暂无'
-            })
-        }
-
-        this.setState({
-            tDate: data
-        })
-    }
-
-    // checkbox状态
-    onSelectChange = (selectedRowKeys) => {
-        console.log('selectedRowKeys changed: ', selectedRowKeys)
-        this.setState({ selectedRowKeys })
-    }
-
-    render() {
-        const columns = [{
+const columns = [{
             title: '姓名',
             width: '20%',
             dataIndex: 'name'
@@ -61,12 +26,62 @@ export default class myTable extends React.Component {
             dataIndex: 'operate'
         }]
 
-        const { selectedRowKeys } = this.state
+export default class myTable extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            tDate: [],
+            loading: false,
+            selectedRowKeys: []
+        }
+    }
+
+    componentDidMount() {
+        const data = []
+
+        for (let i = 0; i < 46; i++) {
+            data.push({
+                key: i,
+                name: `Ryan${i}`,
+                age: 18,
+                address: `南京市雨花台区铁心桥${i}号`,
+                remark: 'http://www.cnblogs.com/luozhihao/',
+                operate: '暂无'
+            })
+        }
+
+        this.setState({
+            tDate: data
+        })
+    }
+
+    // checkbox状态
+    onSelectChange = (selectedRowKeys) => {
+        console.log('selectedRowKeys changed: ', selectedRowKeys)
+        this.setState({ selectedRowKeys })
+    }
+
+    //Reload
+    start = () => {
+        this.setState({loading:false});
+        //ajax here
+        setTimeout(() => {
+            this.setState({
+                selectedRowKeys : [],
+                loading :false,
+            })
+        },1000)
+    }
+
+    render() {
+        const {loading, selectedRowKeys } = this.state;
 
         const rowSelection = {
             selectedRowKeys,
             onChange: this.onSelectChange
         }
+
+        const hasSelected = selectedRowKeys.length > 0 ;
 
         const pagination = {
             total: this.state.tDate.length,
@@ -80,7 +95,13 @@ export default class myTable extends React.Component {
         }
 
         return (
-            <Table rowSelection={rowSelection} columns={columns} dataSource={this.state.tDate} bordered pagination={pagination} />
+            <div>
+                <div style={{marginBottom: 16}}>
+                    <Button type="primary" onClick={this.start} disabled={!hasSelected} loading={loading}>Reload</Button>
+                    <span style={{marginLeft:10}}>{hasSelected ? `Selected ${selectedRowKeys.length} items`:''}</span>
+                </div>
+                <Table rowSelection={rowSelection} columns={columns} dataSource={this.state.tDate} bordered pagination={pagination} />
+            </div>
         )
     }
 }

@@ -1,19 +1,32 @@
 import React from 'react'
-import { Calendar } from 'antd';
+import moment from 'moment'
+import { Calendar, Alert } from 'antd';
 
 export default class myCalendar extends React.Component {
-    dateCellRender = (value) => {
-        return <div>自定义日数据 {value.getDayOfMonth()}</div>
+    state = {
+        value : moment('2017-06-20'),
+        selectedValue : moment('2017-06-20'),
     }
 
-    monthCellRender = (value) => {
-        return <div>自定义月数据 {value.getMonth()}</div>
+    onSelect = (value) => {
+        this.setState({
+            value,
+            selectedValue:value,
+        })
+    }
+    
+    onPanelChange  = (value) => {
+        this.setState({value})
     }
 
     render() {
+        const {value,selectedValue} = this.state;   
         return (
-            <Calendar defaultValue={new Date('2010-10-10')}
-                dateCellRender={this.dateCellRender} monthCellRender={this.monthCellRender} />
+            <div>  
+                <Alert message={`You choose date : ${selectedValue && selectedValue.format('YYYY-MM-DD')}`}></Alert>
+                <Calendar 
+                    value = {value}  onSelect={this.onSelect} onPanelChange={this.onPanelChange}/>
+            </div>
         )
     }
 }

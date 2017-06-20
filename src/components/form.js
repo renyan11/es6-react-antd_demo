@@ -1,9 +1,10 @@
 import React from 'react'
-import { Form, Input, Select, Checkbox, DatePicker, Col, Radio, Button, Modal, message } from 'antd'
+import { Form, Icon, Input, Rate,Select, Checkbox, DatePicker, Col, Radio, Button, Modal,InputNumber ,Switch,Slider,Upload, message } from 'antd'
 
 const FormItem = Form.Item
 const Option = Select.Option
 const RadioGroup = Radio.Group
+const RangePicker = DatePicker.RangePicker;
 
 class myForm extends React.Component {
     constructor(props) {
@@ -39,7 +40,8 @@ class myForm extends React.Component {
     }
 
     render() {
-        const { getFieldProps } = this.props.form
+        // 定义表单属性
+        const { getFieldProps,getFieldDecorator } = this.props.form
 
         const formItemLayout = {
             labelCol: { span: 3 },
@@ -53,12 +55,25 @@ class myForm extends React.Component {
         return (
             <Form horizontal onSubmit={this.handleSubmit}>
                 <FormItem
+                    label="用户名"
+                    {...formItemLayout}
+                    >
+                    {getFieldDecorator('username', {
+                        rules: [
+                        { required: true, message: 'Please write your username!' },
+                        ],
+                    })(
+                    <Input prefix={<Icon type="user" style={{fontSize:13}}/>} placeholder="username please enter..."/>
+                    )}
+                </FormItem>
+
+                <FormItem
                     id="control-input"
-                    label="输入框"
+                    label="密码"
                     {...formItemLayout}
                     required>
-                    <Input id="control-input" placeholder="Please enter..."
-                    {...getFieldProps('userName')} />
+                    <Input prefix={<Icon type="lock" style={{fontSize:13}}></Icon>} id="control-input" placeholder="password please enter..."
+                    {...getFieldProps('password')} />
                 </FormItem>
 
                 <FormItem
@@ -67,7 +82,7 @@ class myForm extends React.Component {
                     required>
                     <Col span="2">
                         <FormItem>
-                            <DatePicker {...getFieldProps('startDate')} />
+                            <DatePicker {...getFieldProps('startDate') } format="YYYY-MM-DD HH:mm:ss"/>
                         </FormItem>
                     </Col>
                     <Col span="1">
@@ -79,6 +94,13 @@ class myForm extends React.Component {
                         </FormItem>
                     </Col>
                 </FormItem>
+                
+                <FormItem
+                    {...formItemLayout}
+                    label="RangePicker"
+                    >
+                        <RangePicker {...getFieldProps('rangePicker')}/>
+                </FormItem>
 
                 <FormItem
                     id="control-textarea"
@@ -89,8 +111,7 @@ class myForm extends React.Component {
                 </FormItem>
 
                 <FormItem
-                    id="select"
-                    label="Select 选择器"
+                    label="Select 单选择器"
                     {...formItemLayout}>
                     <Select id="select" size="large" defaultValue="lucy" style={{ width: 200 }} onChange={this.handleSelectChange}
                         {...getFieldProps('people')}>
@@ -102,9 +123,50 @@ class myForm extends React.Component {
                 </FormItem>
 
                 <FormItem
+                    label="Select[multiple]"
+                    {...formItemLayout}
+                    >
+                    <Select mode="multiple" id="select-multiple" placeholder="please selects here">
+                        <Option value="red">Red</Option>
+                        <Option value="green">Green</Option>
+                        <Option value="black">Black</Option>
+                        <Option value="pink">Pink</Option>
+                        <Option value="blue">Blue</Option>
+                    </Select>
+                </FormItem>
+
+                <FormItem
+                    label="rate stars"
+                    {...formItemLayout}>
+                    <Rate character={<Icon type="heart" />} allowHalf />
+                </FormItem>
+
+                <FormItem
+                    {...formItemLayout}
+                    label="InputNumber"
+                    >
+                    <InputNumber min={1} max={10} />
+                    <span className="ant-form-text"> machines</span>
+                </FormItem>
+
+                <FormItem
+                    {...formItemLayout}
+                    label="Switch"
+                    >
+                    <Switch />
+                </FormItem>
+
+                <FormItem
+                    {...formItemLayout}
+                    label="Slider"
+                    >
+                    <Slider marks={{ 0: 'A', 20: 'B', 40: 'C', 60: 'D', 80: 'E', 100: 'F' }} />
+                </FormItem>
+
+                <FormItem
                     label="Checkbox 多选框"
                     {...formItemLayout}
-                >
+                    >
                     <Checkbox className="ant-checkbox-inline" {...getFieldProps('checkboxItem1')}>选项一</Checkbox>
                     <Checkbox className="ant-checkbox-inline" {...getFieldProps('checkboxItem2')}>选项二</Checkbox>
                     <Checkbox className="ant-checkbox-inline" {...getFieldProps('checkboxItem3')}>选项三</Checkbox>
@@ -120,11 +182,25 @@ class myForm extends React.Component {
                         <Radio value="d">D</Radio>
                     </RadioGroup>
                 </FormItem>
+
+                <FormItem
+                    {...formItemLayout}
+                    label="Upload"
+                    extra="longgggggggggggggggggggggggggggggggggg"
+                    >
+                    <Upload name="logo" action="/upload.do" listType="picture">
+                        <Button>
+                            <Icon type="upload" /> Click to upload
+                        </Button>
+                    </Upload>
+                </FormItem>
+
                 <FormItem wrapperCol={{ span: 6, offset: 3 }} style={{ marginTop: 24 }}>
                     <Button type="primary" htmlType="submit" onClick={success}>确定</Button>
                     &nbsp;&nbsp;&nbsp;
                     <Button type="ghost" onClick={this.showModal}>点击有惊喜</Button>
                 </FormItem>
+                {/*对话框*/}
                 <Modal title="登录" visible={this.state.visible} onOk={this.hideModal} onCancel={this.hideModal}>
                     这是一个modal
                 </Modal>
@@ -133,6 +209,7 @@ class myForm extends React.Component {
     }
 }
 
+{/*Form.create 包装的组件将会自带 this.props.form 属性*/}
 myForm = Form.create()(myForm)
 
 export default myForm
